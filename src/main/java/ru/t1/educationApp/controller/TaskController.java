@@ -1,14 +1,16 @@
 package ru.t1.educationApp.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.t1.educationApp.aspect.LogExecution;
 import ru.t1.educationApp.entity.Task;
 import ru.t1.educationApp.exception.TaskNotFoundException;
 import ru.t1.educationApp.service.TaskService;
 
 import java.util.List;
-
+@EnableAspectJAutoProxy
 @AllArgsConstructor
 @RestController
 @RequestMapping("/tasks")
@@ -22,6 +24,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
+    @LogExecution
     public ResponseEntity<?> getTaskById(@PathVariable int id) {
         try {
             Task task = taskService.getTaskById(id);
