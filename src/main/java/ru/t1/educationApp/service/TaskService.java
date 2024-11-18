@@ -3,6 +3,7 @@ package ru.t1.educationApp.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.t1.educationApp.entity.Task;
+import ru.t1.educationApp.exception.TaskNotFoundException;
 import ru.t1.educationApp.repository.TaskRepository;
 
 import java.util.List;
@@ -19,11 +20,12 @@ public class TaskService {
 
     public Task getTaskById(int id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
-        return optionalTask.orElse(null);
+        return optionalTask.orElseThrow(() -> new TaskNotFoundException("Task not found"));
     }
 
     public Task updateTask(int id, Task task) {
-        Task taskFromDB = taskRepository.findById(id).get();
+        Task taskFromDB = taskRepository.findById(id).orElseThrow(
+                ()-> new TaskNotFoundException("Task not found"));
         taskFromDB.setTitle(task.getTitle());
         taskFromDB.setDescription(task.getDescription());
         taskFromDB.setUserId(task.getUserId());
@@ -31,7 +33,12 @@ public class TaskService {
     }
 
     public void deleteTask(int id) {
-        taskRepository.deleteById(id);
+        boolean taskIsExists = taskRepository.existsById(id);
+        if(taskIsExists) {
+            taskRepository.deleteById(id);
+        } else {
+            throw new TaskNotFoundException("Task not found");
+        }
     }
 
     public List<Task> getAllTasks() {

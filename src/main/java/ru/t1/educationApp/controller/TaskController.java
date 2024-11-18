@@ -1,8 +1,10 @@
 package ru.t1.educationApp.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.t1.educationApp.entity.Task;
+import ru.t1.educationApp.exception.TaskNotFoundException;
 import ru.t1.educationApp.service.TaskService;
 
 import java.util.List;
@@ -20,18 +22,35 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public Task getTaskById(@PathVariable int id) {
-        return taskService.getTaskById(id);
+    public ResponseEntity<?> getTaskById(@PathVariable int id) {
+        try {
+            Task task = taskService.getTaskById(id);
+            return ResponseEntity.ok(task);
+        } catch (TaskNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
+
     }
 
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable int id, @RequestBody Task task) {
-        return taskService.updateTask(id, task);
+    public ResponseEntity<?> updateTask(@PathVariable int id, @RequestBody Task task) {
+        try {
+            Task updatedTask = taskService.updateTask(id, task);
+            return ResponseEntity.ok(updatedTask);
+        } catch (TaskNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTaskById(@PathVariable int id) {
-        taskService.deleteTask(id);
+    public ResponseEntity<?> deleteTaskById(@PathVariable int id) {
+        try {
+            taskService.deleteTask(id);
+            return ResponseEntity.ok().build();
+        } catch (TaskNotFoundException e) {
+            return ResponseEntity.status(404).build();
+        }
+
     }
 
     @GetMapping
