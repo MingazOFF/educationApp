@@ -15,12 +15,8 @@ import org.springframework.stereotype.Component;
 public class MainAspect {
 
     @Before("@annotation(LogExecution)")
-    public void logBefore (JoinPoint joinPoint) {
-        log.info("Before calling method: {}",joinPoint.getSignature().getName());
+    public void logBefore(JoinPoint joinPoint) {
+        log.info("Before calling method: {}", joinPoint.getSignature().toShortString());
     }
 
-    @Pointcut("execution(public * findById(*)")
-    public void exeLog(JoinPoint joinPoint) {
-        log.info("Execution: {}", joinPoint.getSignature().getName());
-    }
 }
