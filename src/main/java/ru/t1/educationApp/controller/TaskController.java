@@ -1,11 +1,9 @@
 package ru.t1.educationApp.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.t1.educationApp.aspect.LogBefore;
-import ru.t1.educationApp.entity.Task;
-import ru.t1.educationApp.exception.TaskNotFoundException;
+import ru.t1.educationApp.dto.TaskDto;
 import ru.t1.educationApp.service.TaskService;
 
 import java.util.List;
@@ -20,48 +18,31 @@ public class TaskController {
 
     @LogBefore
     @PostMapping
-    public int createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
+    public int createTask(@RequestBody TaskDto taskDto) {
+        return taskService.createTask(taskDto);
     }
 
     @LogBefore
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTaskById(@PathVariable int id) {
-        try {
-            Task task = taskService.getTaskById(id);
-            return ResponseEntity.ok(task);
-        } catch (TaskNotFoundException e) {
-            return ResponseEntity.status(404).build();
-        }
-
+    public TaskDto getTaskDtoById(@PathVariable int id) {
+        return taskService.getTaskById(id);
     }
 
     @LogBefore
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable int id, @RequestBody Task task) {
-        try {
-            Task updatedTask = taskService.updateTask(id, task);
-            return ResponseEntity.ok(updatedTask);
-        } catch (TaskNotFoundException e) {
-            return ResponseEntity.status(404).build();
-        }
+    public TaskDto updateTask(@PathVariable int id, @RequestBody TaskDto taskDto) {
+        return taskService.updateTask(id, taskDto);
     }
 
     @LogBefore
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTaskById(@PathVariable int id) {
-        try {
-            taskService.deleteTask(id);
-            return ResponseEntity.ok().build();
-        } catch (TaskNotFoundException e) {
-            return ResponseEntity.status(404).build();
-        }
-
+    public void deleteTaskById(@PathVariable int id) {
+        taskService.deleteTask(id);
     }
 
     @LogBefore
     @GetMapping
-    public List<Task> getAllTasks() {
+    public List<TaskDto> getAllTaskDto() {
         return taskService.getAllTasks();
     }
 

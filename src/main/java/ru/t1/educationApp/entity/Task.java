@@ -2,9 +2,14 @@ package ru.t1.educationApp.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@Builder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "task")
 public class Task {
