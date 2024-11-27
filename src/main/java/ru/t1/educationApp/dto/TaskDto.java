@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.t1.educationApp.entity.TaskStatusEnum;
 
 @Data
 @Builder
@@ -22,4 +23,7 @@ public class TaskDto {
 
     @JsonProperty("user_id")
     private int userId;
+
+    @JsonProperty("status")
+    private TaskStatusEnum status;
 }

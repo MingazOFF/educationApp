@@ -12,6 +12,7 @@ public class TaskMapper {
                 .title(taskDto.getTitle())
                 .description(taskDto.getDescription())
                 .userId(taskDto.getUserId())
+                .status(taskDto.getStatus())
                 .build();
     }
 
@@ -20,6 +21,7 @@ public class TaskMapper {
                 .title(task.getTitle())
                 .description(task.getDescription())
                 .userId(task.getUserId())
+                .status(task.getStatus())
                 .build();
     }
 }

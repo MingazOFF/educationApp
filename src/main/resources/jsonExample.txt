@@ -1,5 +1,6 @@
 {
     "title": "Do task №747",
     "description": "Do task №747 completely",
-    "userId": 7
+    "userId": 7,
+    "status": "OPEN"
 }

@@ -13,6 +13,7 @@ import lombok.*;
 @Entity
 @Table(name = "task")
 public class Task {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -25,5 +26,10 @@ public class Task {
 
     @Column(name = "user_id")
     private int userId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TaskStatusEnum status;
+
 }
 
