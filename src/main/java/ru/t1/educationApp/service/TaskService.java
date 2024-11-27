@@ -1,24 +1,33 @@
 package ru.t1.educationApp.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.t1.educationApp.aspect.LogAfterReturning;
 import ru.t1.educationApp.aspect.LogAfterThrowing;
 import ru.t1.educationApp.aspect.LogAround;
 import ru.t1.educationApp.aspect.LogBefore;
+import ru.t1.educationApp.dto.NotificationTaskDto;
 import ru.t1.educationApp.dto.TaskDto;
 import ru.t1.educationApp.entity.Task;
 import ru.t1.educationApp.exception.TaskNotFoundException;
+import ru.t1.educationApp.kafka.KafkaTaskProducer;
 import ru.t1.educationApp.repository.TaskRepository;
+import ru.t1.educationApp.util.NotificationTaskMapper;
 import ru.t1.educationApp.util.TaskMapper;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final KafkaTaskProducer producer;
+
+    @Value("t1_task_updated")
+    private String topic;
 
     public int createTask(TaskDto taskDto) {
         Task task = TaskMapper.dtoToEntity(taskDto);
@@ -33,8 +42,7 @@ public class TaskService {
         if (optionalTask.isEmpty()) {
             throw new TaskNotFoundException("Task(id=" + id + ") not found");
         }
-        TaskDto taskDto = TaskMapper.entityToDto(optionalTask.get());
-        return taskDto;
+        return TaskMapper.entityToDto(optionalTask.get());
     }
 
     @LogBefore
@@ -47,7 +55,13 @@ public class TaskService {
         taskFromDB.setTitle(taskDto.getTitle());
         taskFromDB.setDescription(taskDto.getDescription());
         taskFromDB.setUserId(taskDto.getUserId());
-        return TaskMapper.entityToDto(taskRepository.save(taskFromDB));
+
+        Task task = taskRepository.save(taskFromDB);
+        NotificationTaskDto notificationTaskDto = NotificationTaskMapper.EntityToNotificationTaskDto(task);
+
+        producer.send(topic, notificationTaskDto);
+
+        return TaskMapper.entityToDto(task);
     }
 
     @LogBefore
