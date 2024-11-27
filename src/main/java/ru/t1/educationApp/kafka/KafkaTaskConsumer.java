@@ -2,7 +2,6 @@ package ru.t1.educationApp.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -12,11 +11,14 @@ import org.springframework.stereotype.Component;
 import ru.t1.educationApp.aspect.LogAfterThrowing;
 import ru.t1.educationApp.aspect.LogBefore;
 import ru.t1.educationApp.dto.NotificationTaskDto;
+import ru.t1.educationApp.service.NotificationEmailService;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class KafkaTaskConsumer {
+
+    private final NotificationEmailService notificationEmailService;
 
     @LogBefore
     @LogAfterThrowing
@@ -32,15 +34,13 @@ public class KafkaTaskConsumer {
 
         try {
 
-            System.out.println("Send email with: " + notificationTaskDto);
-
-        } catch (Exception e) {
-            log.warn(e.getMessage());
-        } finally {
+            notificationEmailService.sendNotification(notificationTaskDto);
             ack.acknowledge();
+        } catch (Exception e) {
+            log.warn("Exception: {}", e.getMessage());
         }
 
-        log.info("Client consumer: Messages have been processed");
+        log.info("Task consumer: Messages have been processed");
     }
 
 
