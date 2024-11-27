@@ -1,6 +1,5 @@
 package ru.t1.educationApp.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -52,14 +51,17 @@ public class TaskService {
         Task taskFromDB = taskRepository.findById(id).orElseThrow(
                 () -> new TaskNotFoundException("Task(id=" + id + ") not found"));
 
+        boolean statusIsNotChanged = taskFromDB.getStatus().toString().equals(taskDto.getStatus().toString());
         taskFromDB.setTitle(taskDto.getTitle());
         taskFromDB.setDescription(taskDto.getDescription());
         taskFromDB.setUserId(taskDto.getUserId());
+        taskFromDB.setStatus(taskDto.getStatus());
 
         Task task = taskRepository.save(taskFromDB);
-        NotificationTaskDto notificationTaskDto = NotificationTaskMapper.EntityToNotificationTaskDto(task);
-
-        producer.send(topic, notificationTaskDto);
+        if (!statusIsNotChanged) {
+            NotificationTaskDto notificationTaskDto = NotificationTaskMapper.EntityToNotificationTaskDto(task);
+            producer.send(topic, notificationTaskDto);
+        }
 
         return TaskMapper.entityToDto(task);
     }

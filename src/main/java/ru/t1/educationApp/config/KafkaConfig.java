@@ -19,7 +19,7 @@ import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
-import ru.t1.educationApp.dto.TaskDto;
+import ru.t1.educationApp.dto.NotificationTaskDto;
 import ru.t1.educationApp.kafka.KafkaTaskProducer;
 import ru.t1.educationApp.kafka.MessageDeserializer;
 
@@ -47,7 +47,7 @@ public class KafkaConfig {
 
 
     @Bean
-    public ConsumerFactory<String, TaskDto> consumerListenerFactory() {
+    public ConsumerFactory<String, NotificationTaskDto> consumerListenerFactory() {
         Map<String, Object> props = new HashMap<>();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
@@ -55,7 +55,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MessageDeserializer.class);
 
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "ru.t1.educationApp.dto.TaskDto");
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "ru.t1.educationApp.dto.NotificationTaskDto");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
 
@@ -68,7 +68,7 @@ public class KafkaConfig {
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, MessageDeserializer.class.getName());
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, MessageDeserializer.class);
 
-        DefaultKafkaConsumerFactory factory = new DefaultKafkaConsumerFactory<String, TaskDto>(props);
+        DefaultKafkaConsumerFactory factory = new DefaultKafkaConsumerFactory<String, NotificationTaskDto>(props);
         factory.setKeyDeserializer(new StringDeserializer());
 
         return factory;
@@ -76,9 +76,9 @@ public class KafkaConfig {
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, TaskDto> kafkaListenerContainerFactory(
-            @Qualifier("consumerListenerFactory") ConsumerFactory<String, TaskDto> consumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, TaskDto> factory =
+    ConcurrentKafkaListenerContainerFactory<String, NotificationTaskDto> kafkaListenerContainerFactory(
+            @Qualifier("consumerListenerFactory") ConsumerFactory<String, NotificationTaskDto> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, NotificationTaskDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factoryBuilder(consumerFactory, factory);
         return factory;
@@ -105,7 +105,7 @@ public class KafkaConfig {
 
 
     @Bean("task")
-    public KafkaTemplate<String, TaskDto> kafkaTemplate(ProducerFactory<String, TaskDto> producerPatFactory) {
+    public KafkaTemplate<String, NotificationTaskDto> kafkaTemplate(ProducerFactory<String, NotificationTaskDto> producerPatFactory) {
         return new KafkaTemplate<>(producerPatFactory);
     }
 
@@ -119,8 +119,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<String, TaskDto> producerTaskFactory() {
-        Map <String, Object> props = new HashMap<>();
+    public ProducerFactory<String, NotificationTaskDto> producerTaskFactory() {
+        Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
