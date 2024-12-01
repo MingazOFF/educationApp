@@ -13,6 +13,8 @@ import ru.t1.educationApp.aspect.LogBefore;
 import ru.t1.educationApp.dto.NotificationTaskDto;
 import ru.t1.educationApp.service.NotificationEmailService;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,10 +24,10 @@ public class KafkaTaskConsumer {
 
     @LogBefore
     @LogAfterThrowing
-    @KafkaListener(id = "t1_demo",
-            topics = "t1_task_updated",
+    @KafkaListener(id = "${spring.t1.kafka.consumer.group-id}",
+            topics = "${spring.t1.kafka.topic.task_status}",
             containerFactory = "kafkaListenerContainerFactory")
-    public void listener(@Payload NotificationTaskDto notificationTaskDto,
+    public void listener(@Payload List<NotificationTaskDto> notificationTaskDtoList,
                          Acknowledgment ack,
                          @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                          @Header(KafkaHeaders.RECEIVED_KEY) String key) {
@@ -33,8 +35,7 @@ public class KafkaTaskConsumer {
         log.info("Task consumer: Processing new messages");
 
         try {
-
-            notificationEmailService.sendNotification(notificationTaskDto);
+            notificationTaskDtoList.forEach(notificationEmailService::sendNotification);
             ack.acknowledge();
         } catch (Exception e) {
             log.warn("Exception: {}", e.getMessage());

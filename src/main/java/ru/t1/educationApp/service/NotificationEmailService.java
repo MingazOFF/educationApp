@@ -15,7 +15,7 @@ import ru.t1.educationApp.dto.NotificationTaskDto;
 @RequiredArgsConstructor
 public class NotificationEmailService {
 
-    @Value("example@gmail.com")
+    @Value("${spring.mail.address}")
     private String emailAddress;
 
     private final JavaMailSender javaMailSender;

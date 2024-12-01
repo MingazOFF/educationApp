@@ -25,7 +25,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final KafkaTaskProducer producer;
 
-    @Value("t1_task_updated")
+    @Value("${spring.t1.kafka.topic.task_status}")
     private String topic;
 
     public int createTask(TaskDto taskDto) {

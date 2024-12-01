@@ -30,9 +30,9 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    @Value("t1-demo")
+    @Value("${spring.t1.kafka.consumer.group-id}")
     private String groupId;
-    @Value("localhost:9092")
+    @Value("${spring.t1.kafka.bootstrap.server}")
     private String servers;
     @Value("${t1.kafka.session.timeout.ms:15000}")
     private String sessionTimeout;
@@ -104,7 +104,7 @@ public class KafkaConfig {
     }
 
 
-    @Bean("task")
+    @Bean("taskTemplate")
     public KafkaTemplate<String, NotificationTaskDto> kafkaTemplate(ProducerFactory<String, NotificationTaskDto> producerPatFactory) {
         return new KafkaTemplate<>(producerPatFactory);
     }
@@ -113,7 +113,7 @@ public class KafkaConfig {
     @ConditionalOnProperty(value = "t1.kafka.producer.enable",
             havingValue = "true",
             matchIfMissing = true)
-    public KafkaTaskProducer producerTask(@Qualifier("task") KafkaTemplate template) {
+    public KafkaTaskProducer producerTask(@Qualifier("taskTemplate") KafkaTemplate template) {
         template.setDefaultTopic(taskTopic);
         return new KafkaTaskProducer(template);
     }

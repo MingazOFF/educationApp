@@ -7,6 +7,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.t1.educationApp.aspect.LogAfterThrowing;
 import ru.t1.educationApp.aspect.LogBefore;
+import ru.t1.educationApp.dto.NotificationTaskDto;
 
 @Slf4j
 @Component
@@ -14,16 +15,17 @@ import ru.t1.educationApp.aspect.LogBefore;
 @Primary
 public class KafkaTaskProducer {
 
-    private final KafkaTemplate template;
+    private final KafkaTemplate<String, NotificationTaskDto> template;
 
     @LogBefore
     @LogAfterThrowing
-    public void send(String topic, Object o) {
+    public void send(String topic, NotificationTaskDto notificationTaskDto) {
         try {
-            template.send(topic, o).get();
+            template.send(topic, notificationTaskDto);
+
             template.flush();
         } catch (Exception e) {
-            //log.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
         }
     }
 

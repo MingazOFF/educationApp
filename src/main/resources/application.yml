@@ -20,15 +20,29 @@ spring:
     hibernate:
       ddl-auto: none
   mail:
+    address: example@gmail.com
     host: smtp.gmail.com
     port: 587
-    username: login!!!
-    password: password!!!
+    username: mail
+    password: password
     properties:
       mail:
         smtp:
           auth: true
           starttls.enable: true
+  t1:
+    kafka:
+      bootstrap:
+        server: localhost:9092
+      consumer:
+        group-id: t1-demo
+        max.poll.records: 10
+      producer:
+        enable: true
+      topic:
+        task_status: task_status_topic
+      listener:
+        poll-timeout: 1000
 server:
   port: '8092'
 
