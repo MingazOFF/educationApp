@@ -1,4 +1,4 @@
-package ru.t1.educationApp.service;
+package ru.t1.educationApp.unitTests.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import ru.t1.educationApp.entity.TaskStatusEnum;
 import ru.t1.educationApp.exception.TaskNotFoundException;
 import ru.t1.educationApp.kafka.KafkaTaskProducer;
 import ru.t1.educationApp.repository.TaskRepository;
+import ru.t1.educationApp.service.TaskService;
 import ru.t1.educationApp.util.TaskMapper;
 
 import java.util.ArrayList;

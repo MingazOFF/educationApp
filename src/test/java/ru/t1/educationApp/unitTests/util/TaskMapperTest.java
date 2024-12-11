@@ -1,4 +1,4 @@
-package ru.t1.educationApp.util;
+package ru.t1.educationApp.unitTests.util;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,6 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.t1.educationApp.dto.TaskDto;
 import ru.t1.educationApp.entity.Task;
 import ru.t1.educationApp.entity.TaskStatusEnum;
+import ru.t1.educationApp.util.TaskMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
