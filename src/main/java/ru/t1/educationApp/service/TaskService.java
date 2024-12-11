@@ -59,7 +59,7 @@ public class TaskService {
 
         Task task = taskRepository.save(taskFromDB);
         if (!statusIsNotChanged) {
-            NotificationTaskDto notificationTaskDto = NotificationTaskMapper.EntityToNotificationTaskDto(task);
+            NotificationTaskDto notificationTaskDto = NotificationTaskMapper.entityToNotificationTaskDto(task);
             producer.send(topic, notificationTaskDto);
         }
 

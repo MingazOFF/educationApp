@@ -5,7 +5,7 @@ import ru.t1.educationApp.entity.Task;
 
 public class NotificationTaskMapper {
 
-    public static NotificationTaskDto EntityToNotificationTaskDto(Task task) {
+    public static NotificationTaskDto entityToNotificationTaskDto(Task task) {
         return NotificationTaskDto.builder()
                 .id(task.getId())
                 .status(task.getStatus())
